@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>speed test</title>
+	<script type="text/javascript" src="./node_modules/network-js/dist/network.js"></script>
+	<script type="text/javascript">
+		var settings = {
+
+    endpoint: 'http://sp1.sntisp.com/upload.aspx', // Where is located the PHP file.
+
+    // The complete settings list is available below.
+
+};
+
+// Create a new Network instance by providing an optional object.
+var net = new Network(settings);
+
+//latency();
+uploadSpeed();
+
+function latency (){
+	console.log('Testing latency, plsease wait..!');
+	// Listen for the "end" event which provides the calculated latencies.
+	net.latency.on('end', function(averageLatency, allLatencies) {
+	    // "allLatencies" is an array containing the five calculated latencies in
+	    // milliseconds. They're used to determine an average latency.
+	    console.log('Average latency', averageLatency / 1024 + 'ms');
+	    //console.log('end', averageLatency, allLatencies);
+	    
+	    //uploadSpeed();
+	});
+
+	// Once all the configuration is done, start the requests for this module.
+	net.latency.start();
+}
+
+// It is possible to chain functions for all the modules, here's an example with the
+// upload module.
+function uploadSpeed(){
+	console.log('Testing upload speed, plsease wait..!');
+	net.upload
+	     .on('start', function(dataSize) {
+	         console.log('start', dataSize);
+	     })
+	     .on('progress', function(averageSpeed, instantSpeed) {
+	         // Every bandwidth measure are in Mega BYTES per second!
+	         console.log('progress', averageSpeed, instantSpeed);
+	     })
+	     .on('restart', function(dataSize) {
+	         // The restart event is triggered when the module didn't have time
+	         // (according to the `delay` option) to take all the measures. A new
+	         // request will start with data size increased by the multiplier value.
+	         console.log('restart', dataSize);
+	     })
+	     .on('end', function(averageSpeed, allInstantSpeeds) {
+	         //console.log('end', averageSpeed, allInstantSpeeds);
+	         console.log('upload speed: ', (averageSpeed / 1024 / 1024))
+	         downloadSpeed()
+	     })
+	     .start();
+
+	// You can also cancel a request (except for the "latency" module).
+	//net.upload.abort();
+}
+
+function downloadSpeed(){
+	console.log('Testing download speed, plsease wait..!');
+	net.download
+     .on('start', function(dataSize) {
+         console.log('start', dataSize);
+     })
+     .on('progress', function(averageSpeed, instantSpeed) {
+         console.log('progress', averageSpeed, instantSpeed);
+     })
+     .on('restart', function(dataSize) {
+         console.log('restart', dataSize);
+     })
+     .on('end', function(averageSpeed, allInstantSpeeds) {
+     	console.log('download speed: ', (averageSpeed / 1024 / 1024))
+         //console.log('end', averageSpeed, allInstantSpeeds);
+
+     })
+     .start();
+	net.download.abort();
+}
+
+	</script>
+</head>
+<body>
+
+</body>
+</html>
