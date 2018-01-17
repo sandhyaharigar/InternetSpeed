@@ -1,5 +1,6 @@
 var  speedTest=require('../index');
 
+//Helper function to dump data (like console.dir, but without depth limitations, and with multiple arguments)  
 console.dump=function(){
   var s=[],a=arguments;
   for(var n=0;n<a.length;n++) {
